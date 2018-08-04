@@ -2,9 +2,7 @@ package com.antkorwin.statemachineserviceexample.services;
 
 import com.antkorwin.junit5integrationtestutils.test.runners.EnableRiderTests;
 import com.antkorwin.statemachineserviceexample.TestDataHelper;
-import com.antkorwin.statemachineserviceexample.models.Events;
 import com.antkorwin.statemachineserviceexample.models.States;
-import com.antkorwin.statemachineutils.service.XStateMachineService;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import org.junit.jupiter.api.Test;
@@ -13,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import static com.antkorwin.statemachineserviceexample.TestDataHelper.TASK_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -28,13 +27,9 @@ public class JpaTaskServiceDataTest {
     @Autowired
     private TaskService taskService;
 
-    @Autowired
-    private XStateMachineService<States, Events> stateMachineService;
-
     @Test
     void testDI() {
         assertThat(taskService).isNotNull();
-        assertThat(stateMachineService).isNotNull();
     }
 
     @Test
@@ -43,5 +38,12 @@ public class JpaTaskServiceDataTest {
     void testCreate() {
         taskService.create(TestDataHelper.TASK_TITLE,
                            TestDataHelper.TASK_ESTIMATE);
+    }
+
+    @Test
+    @DataSet(value = "datasets/task.json", cleanBefore = true, cleanAfter = true)
+    @ExpectedDataSet("datasets/expected_with_state.json")
+    void testUpdateState() {
+        taskService.updateState(TASK_ID, States.BACKLOG);
     }
 }

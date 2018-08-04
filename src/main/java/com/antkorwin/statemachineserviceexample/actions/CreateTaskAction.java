@@ -7,6 +7,7 @@ import com.antkorwin.statemachineserviceexample.models.Task;
 import com.antkorwin.statemachineserviceexample.services.TaskService;
 import com.antkorwin.statemachineutils.service.XStateMachineService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.statemachine.StateMachine;
 import org.springframework.stereotype.Component;
 
 /**
@@ -31,7 +32,7 @@ public class CreateTaskAction extends BaseAction<Task, CreateTaskActionArgument>
     @Override
     protected Task executeImpl(CreateTaskActionArgument argument) {
         Task task = taskService.create(argument.getTaskTitle(), argument.getTaskEstimate());
-        xStateMachineService.create(task.getId());
-        return task;
+        StateMachine<States, Events> machine = xStateMachineService.create(task.getId());
+        return taskService.updateState(task.getId(), machine.getState().getId());
     }
 }

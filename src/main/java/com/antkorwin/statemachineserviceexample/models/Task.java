@@ -3,10 +3,7 @@ package com.antkorwin.statemachineserviceexample.models;
 import lombok.*;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.UUID;
 
 /**
@@ -30,4 +27,7 @@ public class Task {
     private String title;
 
     private int estimate;
+
+    @Enumerated(EnumType.STRING)
+    private States state;
 }
